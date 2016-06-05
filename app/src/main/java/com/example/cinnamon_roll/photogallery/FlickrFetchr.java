@@ -19,20 +19,24 @@ public class FlickrFetchr {
 
         try{
             ByteArrayOutputStream out = new ByteArrayOutputStream();
-            InputStream in = connection.getInputStream();//actually connect the connections object to an InputStream
-            if(connection.getResponseCode() != HttpURLConnection.HTTP_OK){//throw exception when connection fails
+            InputStream in = connection.getInputStream();//get input stream from connection
+            if(connection.getResponseCode() != HttpURLConnection.HTTP_OK)//throw exception when connection fails
+            {
                 throw new IOException(connection.getResponseMessage() + ": with" + urlSpec);
             }
-
             int bytesRead = 0;
             byte[] buffer = new byte[1024];
-            while((bytesRead = in.read(buffer)) > 0){//keep reading raw bytes until InputStream runs out of data
-                out.write(buffer, 0, bytesRead);//write to ByteArrayOutputStream
+            //keep reading raw bytes until InputStream runs out of data
+            while((bytesRead = in.read(buffer)) > 0)
+            {
+                //write to ByteArrayOutputStream
+                out.write(buffer, 0, bytesRead);
             }
             out.close();//close ByteArrayOutputStream after done reading
             return out.toByteArray();//return the bytes array
         }
-        finally {
+        finally
+        {
             connection.disconnect();
         }
     }
