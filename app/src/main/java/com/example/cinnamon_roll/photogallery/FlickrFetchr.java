@@ -50,7 +50,7 @@ public class FlickrFetchr {
             return new String(getUrlBytes(urlSpec));
         }
 
-    //Called to fetch items from url
+    //Called to fetch items from url (data returned is in JSON format)
     public void fetchItems(){
         try
         {
@@ -62,7 +62,7 @@ public class FlickrFetchr {
                     .appendQueryParameter("nojasoncallback", "1")
                     .appendQueryParameter("extras", "url_s")
                     .build().toString();
-            String jsonString = getUrlString(url);
+            String jsonString = getUrlString(url);//calling getUrlString(String url) will return the data at located at url
             Log.i(TAG,"Received JSON: "+ jsonString);
         }
         catch (IOException ioe)
