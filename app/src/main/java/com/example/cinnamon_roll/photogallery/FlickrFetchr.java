@@ -12,6 +12,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -56,7 +57,8 @@ public class FlickrFetchr {
         }
 
     //Called to fetch items from url (data returned is in JSON format)
-    public void fetchItems(){
+    public List<GalleryItem> fetchItems(){
+        List<GalleryItem> items = new ArrayList<>();
         try//try to parse uri
         {
             String url = Uri.parse("https://api.flickr.com/services/rest/")
@@ -70,6 +72,7 @@ public class FlickrFetchr {
             String jsonString = getUrlString(url);//calling getUrlString(String url) will return the data at located at url
             Log.i(TAG,"Received JSON: "+ jsonString);
             JSONObject jsonBody = new JSONObject(jsonString);//initialize a JSONObject using jsonString
+            parseItems(items, jsonBody);//parse the entire json body
         }
         catch(JSONException je)//in case initializing a JSONObject fails
         {
@@ -79,23 +82,24 @@ public class FlickrFetchr {
         {
             Log.e(TAG, "Failed to fetch items: "+ ioe);
         }
+        return items;
     }
 
     //
     private void parseItems(List<GalleryItem> items, JSONObject jsonBody) throws IOException, JSONException{
-        JSONObject photosJSONObject = jsonBody.getJSONObject("photo");
-        JSONArray photoJsonArray = photosJSONObject.getJSONArray("photo");
+        JSONObject photosJSONObject = jsonBody.getJSONObject("photos");//get the JSONObject (master) that contains all other nested JSONObject which contain photos' information
+        JSONArray photoJsonArray = photosJSONObject.getJSONArray("photo");//get a JSONArray of objects which contain "photo" string
         for(int i =0; i < photoJsonArray.length(); i++)
         {
             JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
             GalleryItem item = new GalleryItem();
             item.setId(photoJsonObject.getString("id"));
             item.setCaption(photoJsonObject.getString("tittle"));
-            if(!photoJsonObject.has("url_s"))//if the photoJsonObject does not have url_s
+            if(!photoJsonObject.has("url_s"))//ignore Json object that does not have url_s
             {
                 continue;//then move to the next iteration
             }
-            item.setUrl(photoJsonObject.getString("url_s"));//set url for GalleryItem if there is url_s parameter for each iteration
+            item.setUrl(photoJsonObject.getString("url_s"));//set url for GalleryItem if json object has url_s parameter
             items.add(item);                                //also add item to the list
         }
     }
