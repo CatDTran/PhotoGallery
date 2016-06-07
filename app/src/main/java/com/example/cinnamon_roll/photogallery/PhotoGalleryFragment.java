@@ -9,8 +9,10 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.List;
 
 /**
  * Created by sriracha-sauce on 6/3/16.
@@ -20,10 +22,12 @@ public class PhotoGalleryFragment extends Fragment {
     private RecyclerView mPhotoRecyclerView;
     private static final String TAG = "PhotoGalleryFragment";
 
+    //custom constructor
     public static PhotoGalleryFragment newInstance(){
         return new PhotoGalleryFragment();
     }
 
+    //ONCREATE()
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
@@ -31,12 +35,47 @@ public class PhotoGalleryFragment extends Fragment {
         new FetchItemsTask().execute();
     }
 
+    //ONCREATEVIEW()
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View v = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_photo_gallery_recycler_view);
         mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
         return v;
+    }
+
+    //ViewHolder for RecyclerView
+    private class PhotoHolder extends RecyclerView.ViewHolder{
+        private TextView mTittleTextView;
+        public PhotoHolder(View itemView){
+            super(itemView);
+            mTittleTextView = (TextView) itemView;
+        }
+        public void bindGalleryItem(GalleryItem item){
+            mTittleTextView.setText(item.toString());
+        }
+    }
+
+    //Adapter for ViewHolder and RecyclerView
+    private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder>{
+        private List<GalleryItem> mGalleryItems;
+        public PhotoAdapter(List<GalleryItem> galleryItems){//custom constructor
+            mGalleryItems = galleryItems;
+        }
+        @Override//called by system to create ViewHolder
+        public PhotoHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
+            TextView textView = new TextView(getActivity());
+            return new PhotoHolder(textView);
+        }
+        @Override//called by system to bind ViewHolder
+        public void onBindViewHolder(PhotoHolder photoHolder, int position){
+            GalleryItem galleryItem = mGalleryItems.get(position);
+            photoHolder.bindGalleryItem(galleryItem);
+        }
+        @Override//called by system to get item count; must be implemented
+        public int getItemCount(){
+            return mGalleryItems.size();
+        }
     }
 
     //Creating a background thread for networking

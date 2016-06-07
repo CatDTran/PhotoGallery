@@ -56,7 +56,7 @@ public class FlickrFetchr {
             return new String(getUrlBytes(urlSpec));
         }
 
-    //Called to fetch items from url (data returned is in JSON format)
+    //Called to fetch items from url (data returned is List of json objects)
     public List<GalleryItem> fetchItems(){
         List<GalleryItem> items = new ArrayList<>();
         try//try to parse uri
