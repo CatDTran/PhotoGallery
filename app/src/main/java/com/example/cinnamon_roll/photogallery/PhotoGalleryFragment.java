@@ -12,6 +12,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -21,6 +22,7 @@ public class PhotoGalleryFragment extends Fragment {
 
     private RecyclerView mPhotoRecyclerView;
     private static final String TAG = "PhotoGalleryFragment";
+    private List<GalleryItem> mItems = new ArrayList<>();
 
     //custom constructor
     public static PhotoGalleryFragment newInstance(){
@@ -41,6 +43,7 @@ public class PhotoGalleryFragment extends Fragment {
         View v = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
         mPhotoRecyclerView = (RecyclerView) v.findViewById(R.id.fragment_photo_gallery_recycler_view);
         mPhotoRecyclerView.setLayoutManager(new GridLayoutManager(getActivity(), 3));
+        setupAdapter();//this method is called to setup Adapter for RecyclerView
         return v;
     }
 
@@ -78,10 +81,18 @@ public class PhotoGalleryFragment extends Fragment {
         }
     }
 
+    //Called to setup adapter for RecyclerView
+    private void setupAdapter(){
+        if(isAdded())//check if the fragment has been attached to the hosting Activity
+        {
+            mPhotoRecyclerView.setAdapter(new PhotoAdapter(mItems));
+        }
+    }
+
     //Creating a background thread for networking
-    private class FetchItemsTask extends AsyncTask<Void, Void, Void>{
+    private class FetchItemsTask extends AsyncTask<Void, Void, List<GalleryItem>>{
         @Override
-        protected Void doInBackground(Void... params){//implement this method to do tasks in the background thread
+        protected List<GalleryItem> doInBackground(Void... params){//implement this method to do tasks in the background thread
 //            try
 //            {
 //                String result = new FlickrFetchr().getUrlString("https://www.bignerdranch.com");
@@ -91,8 +102,12 @@ public class PhotoGalleryFragment extends Fragment {
 //            {
 //                Log.e(TAG, "Failed to fetch URL: "+ ioe);
 //            }
-            new FlickrFetchr().fetchItems();
-            return  null;
+            return new FlickrFetchr().fetchItems();
+        }
+        @Override
+        protected void onPostExecute(List<GalleryItem> items){//this will be called after doInBackground() is done
+            mItems = items;
+            setupAdapter();
         }
     }
 

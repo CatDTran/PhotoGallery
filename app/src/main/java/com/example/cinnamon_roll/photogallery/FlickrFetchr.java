@@ -15,6 +15,8 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.net.ssl.HttpsURLConnection;
+
 /**
  * Created by sriracha-sauce on 6/3/16.
  */
@@ -66,7 +68,7 @@ public class FlickrFetchr {
                     .appendQueryParameter("method", "flickr.photos.getRecent")
                     .appendQueryParameter("api_key", API_KEY)
                     .appendQueryParameter("format", "json")
-                    .appendQueryParameter("nojasoncallback", "1")
+                    .appendQueryParameter("nojsoncallback", "1")
                     .appendQueryParameter("extras", "url_s")
                     .build().toString();
             String jsonString = getUrlString(url);//calling getUrlString(String url) will return the data at located at url
@@ -94,7 +96,7 @@ public class FlickrFetchr {
             JSONObject photoJsonObject = photoJsonArray.getJSONObject(i);
             GalleryItem item = new GalleryItem();
             item.setId(photoJsonObject.getString("id"));
-            item.setCaption(photoJsonObject.getString("tittle"));
+            item.setCaption(photoJsonObject.getString("title"));
             if(!photoJsonObject.has("url_s"))//ignore Json object that does not have url_s
             {
                 continue;//then move to the next iteration
