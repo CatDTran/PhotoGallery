@@ -1,5 +1,6 @@
 package com.example.cinnamon_roll.photogallery;
 
+import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
@@ -9,6 +10,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.TextView;
 
 import java.io.IOException;
@@ -29,15 +31,15 @@ public class PhotoGalleryFragment extends Fragment {
         return new PhotoGalleryFragment();
     }
 
-    //ONCREATE()
+    //----------------------ONCREATE()-----------------------------------------//
     @Override
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         new FetchItemsTask().execute();
     }
-
-    //ONCREATEVIEW()
+    //-------------------------------------------------------------------------//
+    //*********************ONCREATEVIEW()**************************************//
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
         View v = inflater.inflate(R.layout.fragment_photo_gallery, container, false);
@@ -46,34 +48,38 @@ public class PhotoGalleryFragment extends Fragment {
         setupAdapter();//this method is called to setup Adapter for RecyclerView
         return v;
     }
-
+    //***********************************************************************//
+//=========================RecyclerView Stuff==============================================//
     //ViewHolder for RecyclerView
     private class PhotoHolder extends RecyclerView.ViewHolder{
-        private TextView mTittleTextView;
+        private ImageView mItemImageView;
         public PhotoHolder(View itemView){
             super(itemView);
-            mTittleTextView = (TextView) itemView;
+           mItemImageView = (ImageView) itemView.findViewById(R.id.fragment_photo_gallery_image_view);
         }
-        public void bindGalleryItem(GalleryItem item){
-            mTittleTextView.setText(item.toString());
+        public void bindDrawable(Drawable drawable){
+            mItemImageView.setImageDrawable(drawable);
         }
     }
-
     //Adapter for ViewHolder and RecyclerView
     private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder>{
         private List<GalleryItem> mGalleryItems;
         public PhotoAdapter(List<GalleryItem> galleryItems){//custom constructor
             mGalleryItems = galleryItems;
         }
-        @Override//called by system to create ViewHolder
+        //Called by system to create ViewHolder
+        @Override
         public PhotoHolder onCreateViewHolder(ViewGroup viewGroup, int viewType){
-            TextView textView = new TextView(getActivity());
-            return new PhotoHolder(textView);
+            LayoutInflater inflater = LayoutInflater.from(getActivity());
+            View view = inflater.inflate(R.layout.gallery_item, viewGroup, false);
+            return new PhotoHolder(view);
         }
-        @Override//called by system to bind ViewHolder
+        //Called by system to bind ViewHolder
+        @Override
         public void onBindViewHolder(PhotoHolder photoHolder, int position){
             GalleryItem galleryItem = mGalleryItems.get(position);
-            photoHolder.bindGalleryItem(galleryItem);
+            Drawable placeholder = getResources().getDrawable(R.drawable.bill_up_close);
+            photoHolder.bindDrawable(placeholder);
         }
         @Override//called by system to get item count; must be implemented
         public int getItemCount(){
@@ -88,8 +94,9 @@ public class PhotoGalleryFragment extends Fragment {
             mPhotoRecyclerView.setAdapter(new PhotoAdapter(mItems));
         }
     }
+//============================================================================================//
 
-    //Creating a background thread for networking
+//-------------------------Background Thread for Networking------------------------//
     private class FetchItemsTask extends AsyncTask<Void, Void, List<GalleryItem>>{
         @Override
         protected List<GalleryItem> doInBackground(Void... params){//implement this method to do tasks in the background thread
@@ -112,3 +119,4 @@ public class PhotoGalleryFragment extends Fragment {
     }
 
 }
+//--------------------------------------------------------------------------------------------//
