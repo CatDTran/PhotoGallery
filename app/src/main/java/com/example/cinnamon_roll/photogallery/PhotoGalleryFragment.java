@@ -25,6 +25,7 @@ public class PhotoGalleryFragment extends Fragment {
     private RecyclerView mPhotoRecyclerView;
     private static final String TAG = "PhotoGalleryFragment";
     private List<GalleryItem> mItems = new ArrayList<>();
+    private ThumbnailDownloader<PhotoHolder> mThumbnailDownloader;
 
     //custom constructor
     public static PhotoGalleryFragment newInstance(){
@@ -37,8 +38,13 @@ public class PhotoGalleryFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         new FetchItemsTask().execute();
+        mThumbnailDownloader = new ThumbnailDownloader<>();
+        mThumbnailDownloader.start();
+        mThumbnailDownloader.getLooper();
+        Log.i(TAG,"Background thread starter");
     }
     //-------------------------------------------------------------------------//
+
     //*********************ONCREATEVIEW()**************************************//
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState){
@@ -50,7 +56,7 @@ public class PhotoGalleryFragment extends Fragment {
     }
     //***********************************************************************//
 //=========================RecyclerView Stuff==============================================//
-    //ViewHolder for RecyclerView
+    //------ViewHolder for RecyclerView------------//
     private class PhotoHolder extends RecyclerView.ViewHolder{
         private ImageView mItemImageView;
         public PhotoHolder(View itemView){
@@ -61,7 +67,7 @@ public class PhotoGalleryFragment extends Fragment {
             mItemImageView.setImageDrawable(drawable);
         }
     }
-    //Adapter for ViewHolder and RecyclerView
+    //--------Adapter for ViewHolder and RecyclerView-------//
     private class PhotoAdapter extends RecyclerView.Adapter<PhotoHolder>{
         private List<GalleryItem> mGalleryItems;
         public PhotoAdapter(List<GalleryItem> galleryItems){//custom constructor
