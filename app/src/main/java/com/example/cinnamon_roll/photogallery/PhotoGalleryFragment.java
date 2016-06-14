@@ -39,7 +39,7 @@ public class PhotoGalleryFragment extends Fragment {
         setRetainInstance(true);
         new FetchItemsTask().execute();
         mThumbnailDownloader = new ThumbnailDownloader<>();
-        mThumbnailDownloader.start();
+        mThumbnailDownloader.start();//should call start() before getLooper()
         mThumbnailDownloader.getLooper();
         Log.i(TAG,"Background thread starter");
     }
@@ -55,6 +55,14 @@ public class PhotoGalleryFragment extends Fragment {
         return v;
     }
     //***********************************************************************//
+    //-----------------------ONDESTROY()-------------------------------------//
+    @Override
+    public void onDestroy(){
+        super.onDestroy();
+        mThumbnailDownloader.quit();//quit background ThumbNailDownloader when fragment is destroyed
+        Log.i(TAG, "Background thread destroyed...!");
+    }
+    //-----------------------------------------------------------------------//
 //=========================RecyclerView Stuff==============================================//
     //------ViewHolder for RecyclerView------------//
     private class PhotoHolder extends RecyclerView.ViewHolder{
@@ -86,6 +94,7 @@ public class PhotoGalleryFragment extends Fragment {
             GalleryItem galleryItem = mGalleryItems.get(position);
             Drawable placeholder = getResources().getDrawable(R.drawable.bill_up_close);
             photoHolder.bindDrawable(placeholder);
+            mThumbnailDownloader.queueThumbnail(photoHolder, galleryItem.getUrl());
         }
         @Override//called by system to get item count; must be implemented
         public int getItemCount(){
