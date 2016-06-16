@@ -24,7 +24,7 @@ public class FlickrFetchr {
 
     private static final String TAG = "FlickrFetchr";
     private static final String API_KEY  = "249365f9bd0c290b06777bba4622d745";
-    //fetch raw bytes and return an array of bytes
+    //=====================getUrlBytes(String)===============================//
     public byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);//create URL object from a string
         HttpURLConnection connection = (HttpURLConnection) url.openConnection();//create a connection object (URLConnection) and cast it to HttpURLConnection
@@ -53,11 +53,13 @@ public class FlickrFetchr {
             connection.disconnect();
         }
     }
-
-        public String getUrlString(String urlSpec) throws IOException{
-            return new String(getUrlBytes(urlSpec));
-        }
-
+    //=======================================================================//
+    //~~~~~~~~~~~~~~~~~~~~~~~getUrlString~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    public String getUrlString(String urlSpec) throws IOException{
+        return new String(getUrlBytes(urlSpec));
+    }
+    //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
+    //**********************fetchItems()*************************************//
     //Called to fetch items from url (data returned is List of json objects)
     public List<GalleryItem> fetchItems(){
         List<GalleryItem> items = new ArrayList<>();
@@ -86,8 +88,8 @@ public class FlickrFetchr {
         }
         return items;
     }
-
-    //
+    //**********************************************************************//
+    //----------------------parseItems()------------------------------------//
     private void parseItems(List<GalleryItem> items, JSONObject jsonBody) throws IOException, JSONException{
         JSONObject photosJSONObject = jsonBody.getJSONObject("photos");//get the JSONObject (master) that contains all other nested JSONObject which contain photos' information
         JSONArray photoJsonArray = photosJSONObject.getJSONArray("photo");//get a JSONArray of objects which contain "photo" string
@@ -105,4 +107,5 @@ public class FlickrFetchr {
             items.add(item);                                //also add item to the list
         }
     }
+    //-----------------------------------------------------------------------//
 }

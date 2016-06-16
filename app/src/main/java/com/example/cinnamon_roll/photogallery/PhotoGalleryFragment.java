@@ -63,7 +63,7 @@ public class PhotoGalleryFragment extends Fragment {
         Log.i(TAG, "Background thread destroyed...!");
     }
     //-----------------------------------------------------------------------//
-//=========================RecyclerView Stuff==============================================//
+//=========================RECYCLERVIEW STUFF==============================================//
     //------ViewHolder for RecyclerView------------//
     private class PhotoHolder extends RecyclerView.ViewHolder{
         private ImageView mItemImageView;
@@ -110,8 +110,7 @@ public class PhotoGalleryFragment extends Fragment {
         }
     }
 //============================================================================================//
-
-//-------------------------Background Thread for Networking------------------------//
+//-------------------------ASYNCTASK FOR BACKGROUND NETWORKING--------------------------------//
     private class FetchItemsTask extends AsyncTask<Void, Void, List<GalleryItem>>{
         @Override
         protected List<GalleryItem> doInBackground(Void... params){//implement this method to do tasks in the background thread
@@ -132,6 +131,5 @@ public class PhotoGalleryFragment extends Fragment {
             setupAdapter();
         }
     }
-
-}
 //--------------------------------------------------------------------------------------------//
+}
