@@ -1,8 +1,11 @@
 package com.example.cinnamon_roll.photogallery;
 
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -38,7 +41,17 @@ public class PhotoGalleryFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         new FetchItemsTask().execute();
-        mThumbnailDownloader = new ThumbnailDownloader<>();
+
+        Handler responseHandler = new Handler();
+        mThumbnailDownloader = new ThumbnailDownloader<>(responseHandler);
+        mThumbnailDownloader.setThumbnailDownloadListener(new ThumbnailDownloader.ThumbnailDownloadListener<PhotoHolder>(){
+            @Override
+            public void onThumbnailDownloaded(PhotoHolder photoholder, Bitmap bitmap){
+                Drawable drawable = new BitmapDrawable(getResources(), bitmap);
+                photoholder.bindDrawable(drawable);
+            }
+        });
+
         mThumbnailDownloader.start();//should call start() before getLooper()
         mThumbnailDownloader.getLooper();
         Log.i(TAG,"Background thread starter");
@@ -55,6 +68,12 @@ public class PhotoGalleryFragment extends Fragment {
         return v;
     }
     //***********************************************************************//
+    //=========================ONDESTROYVIEW()===============================//
+    @Override
+    public void onDestroyView() {
+        super.onDestroyView();
+        mThumbnailDownloader.clearQueue();
+    }
     //-----------------------ONDESTROY()-------------------------------------//
     @Override
     public void onDestroy(){

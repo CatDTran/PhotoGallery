@@ -19,10 +19,20 @@ public class ThumbnailDownloader<T> extends HandlerThread {
     private static final int MESSAGE_DOWNLOAD = 0;
     private Handler mRequestHandler;
     private ConcurrentMap<T,String> mRequestMap = new ConcurrentHashMap<>();
+    private Handler mResponseHandler;
+    private ThumbnailDownloadListener<T> mTThumbnailDownloadListener;
 
+    //+++++++++++++++++++++++++++++++++++++++++++++++++++//
+    public interface ThumbnailDownloadListener<T> {
+        void onThumbnailDownloaded(T target, Bitmap thumbnail);
+    }
+    public void setThumbnailDownloadListener(ThumbnailDownloadListener listener){
+        mTThumbnailDownloadListener = listener;
+    }
     //----------CONSTRUCTOR---------------------//
-    public ThumbnailDownloader(){
+    public ThumbnailDownloader(Handler responseHandler){
         super(TAG);
+        mResponseHandler = responseHandler;
     }
     //------------------------------------------//
     //'''''''''''''''''''onLooperPrepared()'''''''''''''''''''''''''//
@@ -40,7 +50,7 @@ public class ThumbnailDownloader<T> extends HandlerThread {
             }
         };
     }
-    \//''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''//
+    //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''//
     //===============queueThubmnail()===========//
     public void queueThumbnail(T target, String url){
         Log.i(TAG,"Got a URL: "+ url);
@@ -53,6 +63,11 @@ public class ThumbnailDownloader<T> extends HandlerThread {
         }
     }
     //==========================================//
+    //------------------cleanQueue()---------------//
+    public void clearQueue(){
+        mRequestHandler.removeMessages(MESSAGE_DOWNLOAD);
+    }
+    //----------------------------------------------//
     //~~~~~~~~~~~~~~~~~~~~~~~~~~handleRequest(T)~~~~~~~~~~~~~~~~~~~~~~~~~~//
     private void handleRequest(final T target){
         try{
@@ -64,6 +79,16 @@ public class ThumbnailDownloader<T> extends HandlerThread {
             byte[] bitmapBytes = new FlickrFetchr().getUrlBytes(url);//get byte array from the url
             final Bitmap bitmap = BitmapFactory.decodeByteArray(bitmapBytes, 0, bitmapBytes.length);//decode byte array to bitmap
             Log.i(TAG, "Bitmap created");
+            mResponseHandler.post(new Runnable(){
+               public void run(){
+                   if(mRequestMap.get(target) != url)
+                   {
+                       return;
+                   }
+                   mRequestMap.remove(target);
+                   mTThumbnailDownloadListener.onThumbnailDownloaded(target, bitmap);
+               }
+            });
         } catch(IOException ioe)
         {
             Log.e(TAG, "Error downloading image", ioe);
