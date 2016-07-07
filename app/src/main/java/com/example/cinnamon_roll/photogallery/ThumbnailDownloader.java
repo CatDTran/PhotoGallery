@@ -26,7 +26,7 @@ public class ThumbnailDownloader<T> extends HandlerThread {
     public interface ThumbnailDownloadListener<T> {
         void onThumbnailDownloaded(T target, Bitmap thumbnail);
     }
-    public void setThumbnailDownloadListener(ThumbnailDownloadListener listener){
+    public void setThumbnailDownloadListener(ThumbnailDownloadListener<T> listener){
         mTThumbnailDownloadListener = listener;
     }
     //----------CONSTRUCTOR---------------------//
@@ -51,7 +51,7 @@ public class ThumbnailDownloader<T> extends HandlerThread {
         };
     }
     //''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''''//
-    //===============queueThubmnail()===========//
+    //===============queueThumbnail()===========//
     public void queueThumbnail(T target, String url){
         Log.i(TAG,"Got a URL: "+ url);
         if(url == null)

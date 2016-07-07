@@ -42,8 +42,8 @@ public class PhotoGalleryFragment extends Fragment {
         setRetainInstance(true);
         new FetchItemsTask().execute();
 
-        Handler responseHandler = new Handler();
-        mThumbnailDownloader = new ThumbnailDownloader<>(responseHandler);
+        Handler responseHandler = new Handler();//this handler is automatically attached to this main thread
+        mThumbnailDownloader = new ThumbnailDownloader<>(responseHandler);//passing the reference if the handler to background thread
         mThumbnailDownloader.setThumbnailDownloadListener(new ThumbnailDownloader.ThumbnailDownloadListener<PhotoHolder>(){
             @Override
             public void onThumbnailDownloaded(PhotoHolder photoholder, Bitmap bitmap){
@@ -111,8 +111,8 @@ public class PhotoGalleryFragment extends Fragment {
         @Override
         public void onBindViewHolder(PhotoHolder photoHolder, int position){
             GalleryItem galleryItem = mGalleryItems.get(position);
-            Drawable placeholder = getResources().getDrawable(R.drawable.bill_up_close);
-            photoHolder.bindDrawable(placeholder);
+            //Drawable placeholder = getResources().getDrawable(R.drawable.bill_up_close);
+            //photoHolder.bindDrawable(placeholder);
             mThumbnailDownloader.queueThumbnail(photoHolder, galleryItem.getUrl());
         }
         @Override//called by system to get item count; must be implemented
