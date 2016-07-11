@@ -24,6 +24,15 @@ public class FlickrFetchr {
 
     private static final String TAG = "FlickrFetchr";
     private static final String API_KEY  = "249365f9bd0c290b06777bba4622d745";
+    private static final String FETCH_RECENTS_METHOD = "flickr.photos.getRecent";
+    private static final String SEARCH_METHOD = "flickr.photos.search";
+    private static final Uri ENDPOINT =  Uri.parse("https://api.flickr.com/services/rest/")
+                                            .buildUpon()
+                                            .appendQueryParameter("api_key", API_KEY)
+                                            .appendQueryParameter("format", "json")
+                                            .appendQueryParameter("nojsoncallback", "1")
+                                            .appendQueryParameter("extras", "url_s")
+                                            .build();
     //=====================getUrlBytes(String)===============================//
     public byte[] getUrlBytes(String urlSpec) throws IOException {
         URL url = new URL(urlSpec);//create URL object from a string
@@ -59,20 +68,25 @@ public class FlickrFetchr {
         return new String(getUrlBytes(urlSpec));
     }
     //~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~//
-    //**********************fetchItems()*************************************//
+    //--------------------------fetchRecentPhotos()-------------------------//
+    public List<GalleryItem> fetchRecentPhotos(){
+        String url = buildUrl(FETCH_RECENTS_METHOD, null);
+        return downloadGalleryItems(url);
+    }
+    //----------------------------------------------------------------------//
+    //#########################  searchPhotos()  ###########################// Method called to search photos
+    public List<GalleryItem> searchPhotos(String query){
+        String url = buildUrl(SEARCH_METHOD, query);
+        return downloadGalleryItems(url);
+    }
+    //######################################################################//
+    //**********************downloadGalleryItems()*************************************//
     //Called to fetch items from url (data returned is List of json objects)
-    public List<GalleryItem> fetchItems(){
+    private List<GalleryItem> downloadGalleryItems(String url){
         List<GalleryItem> items = new ArrayList<>();
         try//try to parse uri
         {
-            String url = Uri.parse("https://api.flickr.com/services/rest/")
-                    .buildUpon()
-                    .appendQueryParameter("method", "flickr.photos.getRecent")
-                    .appendQueryParameter("api_key", API_KEY)
-                    .appendQueryParameter("format", "json")
-                    .appendQueryParameter("nojsoncallback", "1")
-                    .appendQueryParameter("extras", "url_s")
-                    .build().toString();
+
             String jsonString = getUrlString(url);//calling getUrlString(String url) will return the data at located at url
             Log.i(TAG,"Received JSON: "+ jsonString);
             JSONObject jsonBody = new JSONObject(jsonString);//initialize a JSONObject using jsonString
@@ -89,6 +103,16 @@ public class FlickrFetchr {
         return items;
     }
     //**********************************************************************//
+    //============================buildUrl()================================// (A helper method)
+    private String buildUrl(String method, String query){
+        Uri.Builder uriBuilder = ENDPOINT.buildUpon().appendQueryParameter("method", method);
+        if (method.equals(SEARCH_METHOD))
+        {
+            uriBuilder.appendQueryParameter("text", query);
+        }
+        return uriBuilder.build().toString();
+    }
+    //======================================================================//
     //----------------------parseItems()------------------------------------//
     private void parseItems(List<GalleryItem> items, JSONObject jsonBody) throws IOException, JSONException{
         JSONObject photosJSONObject = jsonBody.getJSONObject("photos");//get the JSONObject (master) that contains all other nested JSONObject which contain photos' information
