@@ -142,7 +142,13 @@ public class PhotoGalleryFragment extends Fragment {
 //            {
 //                Log.e(TAG, "Failed to fetch URL: "+ ioe);
 //            }
-            return new FlickrFetchr().fetchItems();
+            String query = "robot";
+            if(query == null){
+                return new FlickrFetchr().fetchRecentPhotos();
+            }
+            else{
+                return new FlickrFetchr().searchPhotos(query);
+            }
         }
         @Override
         protected void onPostExecute(List<GalleryItem> items){//this will be called after doInBackground() is done
