@@ -142,7 +142,7 @@ public class PhotoGalleryFragment extends Fragment {
 //            {
 //                Log.e(TAG, "Failed to fetch URL: "+ ioe);
 //            }
-            String query = "robot";
+            String query = "pokemon";
             if(query == null){
                 return new FlickrFetchr().fetchRecentPhotos();
             }
