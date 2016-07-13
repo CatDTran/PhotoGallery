@@ -9,10 +9,12 @@ import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.GridLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.support.v7.widget.SearchView;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
@@ -43,7 +45,7 @@ public class PhotoGalleryFragment extends Fragment {
         super.onCreate(savedInstanceState);
         setRetainInstance(true);
         setHasOptionsMenu(true);
-        new FetchItemsTask().execute();
+        updateItems();
 
         Handler responseHandler = new Handler();//this handler is automatically attached to this main thread
         mThumbnailDownloader = new ThumbnailDownloader<>(responseHandler);//passing the reference if the handler to background thread
@@ -89,6 +91,24 @@ public class PhotoGalleryFragment extends Fragment {
     public void onCreateOptionsMenu(Menu menu, MenuInflater menuInflater){
         super.onCreateOptionsMenu(menu, menuInflater);
         menuInflater.inflate(R.menu.fragment_photo_gallery, menu);
+        MenuItem searchItem = menu.findItem(R.id.menu_item_search);
+        final SearchView searchView = (SearchView) searchItem.getActionView();
+        searchView.setOnQueryTextListener(new SearchView.OnQueryTextListener(){
+            @Override
+            public boolean onQueryTextSubmit(String s){//called when user submits a query
+                Log.d(TAG, "QueryTextSubmit: " + s);
+                updateItems();
+                return true;
+            }
+            @Override
+            public boolean onQueryTextChange(String s){//called when a single character in search query changes
+                Log.d(TAG, "QueryTextChange: "+ s);
+                return false;
+            }
+        });
+    }
+    private void updateItems(){
+        new FetchItemsTask().execute();
     }
     //***********************************************************************//
 
