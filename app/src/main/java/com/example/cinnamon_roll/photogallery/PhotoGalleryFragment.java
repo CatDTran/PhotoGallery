@@ -107,6 +107,13 @@ public class PhotoGalleryFragment extends Fragment {
                 return false;
             }
         });
+        searchView.setOnSearchClickListener(new View.OnClickListener(){//call back to prepopulate the search box with previous search query
+            @Override
+            public void onClick(View v){
+                String query = QueryPreferences.getStoredQuery(getActivity());
+                searchView.setQuery(query, false);
+            }
+        });
     }
     @Override
     public boolean onOptionsItemSelected(MenuItem item){
