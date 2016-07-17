@@ -46,7 +46,7 @@ public class PollService extends IntentService{
         }
         else{
             Log.i(TAG, "Got a new result: "+ resultId);
-        }
+        }\QueryPreferences.setLastResultId(this, resultId);
     }
     //=======isNetworkAvailableAndConnected()======// A helper function to check for network connectivity
     private boolean isNetworkAvailableAndConnected(){
