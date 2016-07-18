@@ -47,6 +47,7 @@ public class PhotoGalleryFragment extends Fragment {
         setRetainInstance(true);
         setHasOptionsMenu(true);
         updateItems();
+        PollService.setServiceAlarm(getActivity(), true);
         Intent i = PollService.newIntent(getActivity());
         getActivity().startService(i);
 
