@@ -124,7 +124,7 @@ public class PhotoGalleryFragment extends Fragment {
         }
         else
         {
-            toggleItem.setTitle(R.string.stop_polling);
+            toggleItem.setTitle(R.string.start_polling);
         }
     }
     @Override
