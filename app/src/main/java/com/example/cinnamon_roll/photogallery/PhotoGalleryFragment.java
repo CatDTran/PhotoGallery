@@ -48,9 +48,6 @@ public class PhotoGalleryFragment extends Fragment {
         setHasOptionsMenu(true);
         updateItems();
 
-        Intent i = PollService.newIntent(getActivity());
-        getActivity().startService(i);
-
         Handler responseHandler = new Handler();//this handler is automatically attached to this main thread
         mThumbnailDownloader = new ThumbnailDownloader<>(responseHandler);//passing the reference if the handler to background thread
         mThumbnailDownloader.setThumbnailDownloadListener(new ThumbnailDownloader.ThumbnailDownloadListener<PhotoHolder>(){
