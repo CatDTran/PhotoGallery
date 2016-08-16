@@ -21,7 +21,7 @@ import java.util.List;
  */
 public class PollService extends IntentService{
     private static final String TAG = "PollService";
-    private static final long POLL_INTERNAL = AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+    private static final long POLL_INTERNAL = 500;//AlarmManager.INTERVAL_FIFTEEN_MINUTES;
     //--------------------newIntent()-----------------------//
     public static Intent newIntent(Context context){
         return new Intent(context, PollService.class);
@@ -38,6 +38,7 @@ public class PollService extends IntentService{
             alarmManager.cancel(pi);
             pi.cancel();
         }
+        QueryPreferences.setAlarmOn(context, isOn);//save alarn status to SharedPreference whenever it is set
     }
     //--------------------isServiceAlarmOn()---------------//
     public static boolean isServiceAlarmOn(Context context){
