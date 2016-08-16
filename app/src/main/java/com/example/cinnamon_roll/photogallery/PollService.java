@@ -20,8 +20,11 @@ import java.util.List;
  * Created by trand_000 on 7/16/2016.
  */
 public class PollService extends IntentService{
+
     private static final String TAG = "PollService";
     private static final long POLL_INTERNAL = 500;//AlarmManager.INTERVAL_FIFTEEN_MINUTES;
+    public static final String ACTION_SHOW_NOTIFICATION = "com.cinnamon_roll.android.photogallery.SHOW_NOTIFICATION";
+
     //--------------------newIntent()-----------------------//
     public static Intent newIntent(Context context){
         return new Intent(context, PollService.class);
@@ -91,6 +94,7 @@ public class PollService extends IntentService{
                     .build();
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
             notificationManagerCompat.notify(0, notification);
+            sendBroadcast(new Intent(ACTION_SHOW_NOTIFICATION));    //send out broadcast everytime new search result are available
         }
         QueryPreferences.setLastResultId(this, resultId);
     }
