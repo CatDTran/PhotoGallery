@@ -18,7 +18,8 @@ public abstract class VisibleFragment extends Fragment{
     public void onStart(){
         super.onStart();
         IntentFilter filter = new IntentFilter(PollService.ACTION_SHOW_NOTIFICATION);
-        getActivity().registerReceiver(mOnShowNotification, filter);    //register dynamic broadcast receiver with filter
+        getActivity().registerReceiver(mOnShowNotification, filter, PollService.PERM_PRIVATE, null);    //register dynamic broadcast receiver with filter
+                                                                                                        //can only be triggered by component that have "PollService.PERM_PRIVATE" permission
     }
 
     @Override

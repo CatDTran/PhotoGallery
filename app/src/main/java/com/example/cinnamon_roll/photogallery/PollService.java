@@ -24,6 +24,7 @@ public class PollService extends IntentService{
     private static final String TAG = "PollService";
     private static final long POLL_INTERNAL = 500;//AlarmManager.INTERVAL_FIFTEEN_MINUTES;
     public static final String ACTION_SHOW_NOTIFICATION = "com.cinnamon_roll.android.photogallery.SHOW_NOTIFICATION";
+    public static final String PERM_PRIVATE = "com.cinnamon_roll.photogallery.PRIVATE";
 
     //--------------------newIntent()-----------------------//
     public static Intent newIntent(Context context){
@@ -94,7 +95,8 @@ public class PollService extends IntentService{
                     .build();
             NotificationManagerCompat notificationManagerCompat = NotificationManagerCompat.from(this);
             notificationManagerCompat.notify(0, notification);
-            sendBroadcast(new Intent(ACTION_SHOW_NOTIFICATION));    //send out broadcast everytime new search result are available
+            sendBroadcast(new Intent(ACTION_SHOW_NOTIFICATION), PERM_PRIVATE);    //send out broadcast every time new search result are available;
+                                                                                  //using private permission here makes sure any application must have the same permission to be triggered by the intent
         }
         QueryPreferences.setLastResultId(this, resultId);
     }
