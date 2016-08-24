@@ -18,6 +18,7 @@ public abstract class VisibleFragment extends Fragment{
 
     @Override
     public void onStart(){
+        Log.i(TAG, "VisibleFragment's onStart() called");
         super.onStart();
         IntentFilter filter = new IntentFilter(PollService.ACTION_SHOW_NOTIFICATION);
         getActivity().registerReceiver(mOnShowNotification, filter, PollService.PERM_PRIVATE, null);    //register dynamic broadcast receiver with filter
@@ -26,6 +27,7 @@ public abstract class VisibleFragment extends Fragment{
 
     @Override
     public void onStop(){
+        Log.i(TAG, "VisibleFragment's onStop() called");
         super.onStop();
         getActivity().unregisterReceiver(mOnShowNotification);  //unregister dynamic broadcast receiver
     }
