@@ -128,6 +128,7 @@ public class FlickrFetchr {
                 continue;//then move to the next iteration
             }
             item.setUrl(photoJsonObject.getString("url_s"));//set url for GalleryItem if json object has url_s parameter
+            item.setOwner(photoJsonObject.getString("owner"));//set owner property from JSON object
             items.add(item);                                //also add item to the list
         }
     }
