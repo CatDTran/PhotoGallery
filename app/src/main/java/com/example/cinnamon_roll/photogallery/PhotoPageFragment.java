@@ -6,6 +6,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.webkit.WebView;
+import android.webkit.WebViewClient;
 
 /**
  * Created by sriracha-sauce on 8/25/16.
@@ -33,6 +34,13 @@ public class PhotoPageFragment extends VisibleFragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstaceState){
         View v = inflater.inflate(R.layout.fragment_photo_page, container, false);
         mWebView = (WebView) v.findViewById(R.id.fragment_photo_page_web_view);
+        mWebView.getSettings().setJavaScriptEnabled(true);//enable JavaScript because flickr photo pages use JavaScript
+        mWebView.setWebViewClient(new WebViewClient(){
+            public boolean shouldOverrideUrlLoading(WebView view, String url){//if return false, webview will handle when user click on links on the page..
+                return false;                                                       //..just like a browser would
+            }
+        });
+        mWebView.loadUrl(mUri.toString());//actually load the photo web page
         return v;
     }
 }
