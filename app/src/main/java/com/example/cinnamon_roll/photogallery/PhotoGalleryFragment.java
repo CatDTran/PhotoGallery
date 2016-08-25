@@ -167,8 +167,9 @@ public class PhotoGalleryFragment extends VisibleFragment {
             mGalleryItem = galleryItem;
         }
         @Override
-        public void onClick(View view){//open photo web page in browser when clicked
-            Intent i = new Intent(Intent.ACTION_VIEW, mGalleryItem.getPhotoPageUri());
+        public void onClick(View view){//open photo web page in WebView when clicked
+            //Intent i = new Intent(Intent.ACTION_VIEW, mGalleryItem.getPhotoPageUri());//launch photo web page in browser
+            Intent i = PhotoPageActivity.newIntent(getActivity(), mGalleryItem.getPhotoPageUri());
             startActivity(i);
         }
     }
