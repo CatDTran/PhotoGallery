@@ -21,12 +21,17 @@ public class PhotoPageFragment extends VisibleFragment {
     private Uri mUri;
     private WebView mWebView;
     private ProgressBar mProgressBar;
+
     public static PhotoPageFragment newInstance(Uri uri){
         Bundle args = new Bundle();
         args.putParcelable(ARG_URI, uri);
         PhotoPageFragment fragment = new PhotoPageFragment();
         fragment.setArguments(args);
         return fragment;
+    }
+
+    public WebView getWebView(){
+        return mWebView;
     }
 
     //---------ONCREATE()-------------//
@@ -67,7 +72,7 @@ public class PhotoPageFragment extends VisibleFragment {
                 return false;                                                       //..just like a browser would
             }
         });
-        mWebView.loadUrl(mUri.toString());//actually load the photo web page
+        mWebView.loadUrl(mUri.toString());//actually load the photo web page. Loading must be done after configuring the WebView
         return v;
     }
 }

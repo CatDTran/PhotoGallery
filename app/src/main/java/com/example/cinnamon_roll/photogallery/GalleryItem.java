@@ -44,9 +44,11 @@ public class GalleryItem {
     }
     //Build the photo page Uri base on owner ID and photo ID
     public Uri getPhotoPageUri(){
-        return Uri.parse("http://www.flickr.com/photos/").buildUpon().appendPath(mOwner).appendPath(mId).build();
+        return Uri.parse("http://www.flickr.com/photos/")
+                .buildUpon()
+                .appendPath(mOwner)
+                .appendPath(mId).build();
     }
-
     @Override
     public String toString()
     {
