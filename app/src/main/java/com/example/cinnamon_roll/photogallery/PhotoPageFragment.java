@@ -68,8 +68,15 @@ public class PhotoPageFragment extends VisibleFragment {
             }
         });
         mWebView.setWebViewClient(new WebViewClient(){
-            public boolean shouldOverrideUrlLoading(WebView view, String url){//if return false, webview will handle when user click on links on the page..
-                return false;                                                       //..just like a browser would
+            public boolean shouldOverrideUrlLoading(WebView view, String url){//if return false, webview will handle when user click on links on the page just like a browser would
+                //handle link inside the WebView if http scheme
+                if(url.contains("http")){
+                    return false;
+                }
+                //otherwise let Acitivity Manager pick out a proper handler for the url
+                else{
+                    return true;
+                }
             }
         });
         mWebView.loadUrl(mUri.toString());//actually load the photo web page. Loading must be done after configuring the WebView

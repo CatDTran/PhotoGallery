@@ -22,6 +22,7 @@ public class PhotoPageActivity extends SingleFragmentActivity {
         return PhotoPageFragment.newInstance(getIntent().getData());
     }
 
+    //Overriding this to enable go-back functionality inside the WebView
     @Override
     public void onBackPressed(){
         FragmentManager fragmentManager = getSupportFragmentManager();
